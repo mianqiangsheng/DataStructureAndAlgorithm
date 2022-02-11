@@ -2,6 +2,7 @@ package algorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,17 +21,39 @@ public class MaxSubSum {
         int maxSum=0,thisSum=0;
         List<Integer> subArray = new ArrayList<>();
 
+        //todo 新增逻辑
+        List<List<Integer>> temp = new ArrayList<>();
+
+
         for (int j=0;j<array.length;j++){
             thisSum+=array[j];
             if(thisSum>maxSum){
                 maxSum=thisSum;
             }else if(thisSum<0){
                 thisSum=0;
+
+                //todo 新增逻辑
+                List<Integer> des = Arrays.asList(new Integer[subArray.size()]);
+                Collections.copy(des,subArray);
+                Collections.addAll(temp,des);
+
                 subArray.clear();
                 continue;
             }
             subArray.add(j);
         }
+
+        //todo 新增逻辑
+        temp.add(subArray);
+        long max = 0;
+        for (List<Integer> list:temp) {
+            long sum = list.stream().mapToLong(integer -> array[integer.intValue()]).sum();
+            if (max<sum){
+                max = sum;
+                subArray = list;
+            }
+        }
+
         System.out.println(Arrays.toString(subArray.toArray()));
         return maxSum;
     }

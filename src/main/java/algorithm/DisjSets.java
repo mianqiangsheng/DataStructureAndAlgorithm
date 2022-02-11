@@ -55,6 +55,11 @@ public class DisjSets {
         System.out.println(Arrays.toString(s));
     }
 
+    /**
+     * [-1, -1, -1, 4, -3, 4, 4, 6] 表示 0至2下标的数组元素不属于任何类，下标3元素属于下标4元素，下标4元素有3个子元素
+     * 下标5，6也属于下标4元素，下标7属于下标6元素
+     * @param args
+     */
     public static void main(String[] args) {
 
         DisjSets disjSets = new DisjSets(8);

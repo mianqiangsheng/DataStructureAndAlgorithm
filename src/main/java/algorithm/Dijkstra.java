@@ -190,5 +190,31 @@ public class Dijkstra {
         printPath(verTex7);
         System.out.println();
         printPath(verTex6);
+
+        /**
+         * 可以用在寻找树子节点路径
+         */
+        VerTex  verTex11 = new VerTex(1),
+                verTex12 = new VerTex(2),
+                verTex13 = new VerTex(3),
+                verTex14 = new VerTex(4),
+                verTex15 = new VerTex(5),
+                verTex16 = new VerTex(6),
+                verTex17 = new VerTex(7);
+        verTex11.setAdjacent(verTex12,verTex13);
+        verTex12.setAdjacent(verTex14,verTex15,verTex16);
+        verTex15.setAdjacent(verTex17);
+
+        Map<String,Integer> costs1 = new HashMap<>();
+        costs1.put("1->2",1);costs1.put("1->3",1);
+        costs1.put("2->4",1);costs1.put("2->5",1);costs1.put("2->6",1);
+        costs1.put("5->7",1);
+
+        dijkstra(verTex11,costs1,verTex11,verTex12,verTex13,verTex14,verTex15,verTex16,verTex17);
+
+        System.out.println();
+        printPath(verTex17);
+        System.out.println();
+        printPath(verTex13);
     }
 }
