@@ -39,3 +39,12 @@ AVL树,自带平衡条件的二叉查找树
 
 Junit4使用——
 ### GcdTest
+
+图形相似算法
+picture.similarity.ShapeAlgorithm 基于形状判断
+可以另外基于颜色、纹理
+参考：https://github.com/mengyue0722/CBIR-Content-Based-Image-Retrieval-
+另外这个算法也不错，不过不能单独基于形状判断，在对比诸如散点图这种不太好
+https://github.com/HongZhaoHua/jstarcraft-dip#%E4%BB%8B%E7%BB%8D
+轨迹相似度算法，但是没仔细看
+https://github.com/qzq2514/SystemOfTrace
