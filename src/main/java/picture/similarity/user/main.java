@@ -1,8 +1,13 @@
 package picture.similarity.user;
 
-import com.lizhen.opDB.*;
-import com.lizhen.prepare.*;
+
 import org.opencv.core.Core;
+import picture.similarity.opDB.Insert;
+import picture.similarity.opDB.Select;
+import picture.similarity.prepare.getColor;
+import picture.similarity.prepare.getPicture;
+import picture.similarity.prepare.getShape;
+import picture.similarity.prepare.getTexture;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -30,30 +35,30 @@ public class main {
 	private JTextField text3;//ͼƬ·��
 	JLabel[] img = new JLabel[12];
 	JLabel[] imgpath = new JLabel[12];
-	
-	
+
+
 	double[] color = new double[9];//����ͼ�����ɫ����
 	double[] texture = new double[9];//����ͼ�����������
 	double[] hu = new double[8];//����ͼ�����״����
-	
+
 	private void picture_prepare() {
-		
+
 	}
 	private void init() {
 		frame.setBounds(100, 100, 1700, 1000);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
+
 		JLabel label_db = new JLabel("����ͼ��:");
 		label_db.setFont(new Font("����", Font.PLAIN, 15));
 		label_db.setBounds(15, 15, 70, 25);
 		frame.add(label_db);
-		
+
 		texts = new JTextField();
 		texts.setBounds(90, 15, 170, 25);
 		frame.add(texts);
 		texts.setColumns(10);
-		
+
 		JButton brows = new JButton("���");
 		brows.setFont(new Font("����", Font.PLAIN, 15));
 		brows.setBounds(260, 15, 70, 25);
@@ -64,7 +69,7 @@ public class main {
 				TanChuang1();
 			}
 		});
-		
+
 		JButton jz = new JButton("����");
 		jz.setFont(new Font("����", Font.PLAIN, 15));
 		jz.setBounds(330, 15, 70, 25);
@@ -80,17 +85,17 @@ public class main {
 				}
 			}
 		});
-		
+
 		JLabel label = new JLabel("ѡ���ļ�:");
 		label.setFont(new Font("����", Font.PLAIN, 15));
 		label.setBounds(15, 50, 70, 25);
 		frame.add(label);
-		
+
 		text = new JTextField();
 		text.setBounds(90, 50, 170, 25);
 		frame.add(text);
 		text.setColumns(10);
-		
+
 		JButton brow = new JButton("���");
 		brow.setFont(new Font("����", Font.PLAIN, 15));
 		brow.setBounds(260, 50, 70, 25);
@@ -106,16 +111,16 @@ public class main {
 				}
 			}
 		});
-		
+
 		JLabel label_1 = new JLabel("��ǰͼ��:");
 		label_1.setFont(new Font("����", Font.PLAIN, 15));
 		label_1.setBounds(15, 85, 80, 25);
 		frame.add(label_1);
-		
+
 		label_2 = new JLabel("");
 		label_2.setBounds(30, 135, 300, 200);
 		frame.add(label_2);
-		
+
 		for(int i=0;i<12;i++) {
 			img[i] = new JLabel();
 			imgpath[i] = new JLabel();
@@ -124,7 +129,7 @@ public class main {
 		label1.setFont(new Font("����", Font.PLAIN, 15));
 		label1.setBounds(15, 385, 100, 25);
 		frame.add(label1);
-		
+
 		JButton b1 = new JButton("������ɫ����");
 		b1.setFont(new Font("����", Font.PLAIN, 15));
 		b1.setBounds(100, 435, 130, 30);
@@ -139,7 +144,7 @@ public class main {
 				}
 			}
 		});
-		
+
 		JButton b2 = new JButton("�����������");
 		b2.setFont(new Font("����", Font.PLAIN, 15));
 		b2.setBounds(100, 485, 130, 30);
@@ -154,8 +159,8 @@ public class main {
 				}//�����������
 			}
 		});
-		
-		
+
+
 
 		JButton b3 = new JButton("������״����");
 		b3.setFont(new Font("����", Font.PLAIN, 15));
@@ -172,12 +177,12 @@ public class main {
 				}//�����������
 			}
 		});
-		
+
 		JLabel zong = new JLabel("�ۺϼ���(����������ռȨ��):");
 		zong.setFont(new Font("����", Font.PLAIN, 15));
 		zong.setBounds(15, 610, 210, 25);
 		frame.add(zong);
-		
+
 		JLabel zong1 = new JLabel("��ɫȨ��(0.00-1.00):");
 		zong1.setFont(new Font("����", Font.PLAIN, 15));
 		zong1.setBounds(60, 650, 180, 25);
@@ -186,7 +191,7 @@ public class main {
 		text1.setBounds(220, 650, 50, 25);
 		frame.add(text1);
 		text1.setColumns(10);
-		
+
 		JLabel zong2 = new JLabel("����Ȩ��(0.00-1.00):");
 		zong2.setFont(new Font("����", Font.PLAIN, 15));
 		zong2.setBounds(60, 690, 180, 25);
@@ -195,7 +200,7 @@ public class main {
 		text2.setBounds(220, 690, 50, 25);
 		frame.add(text2);
 		text2.setColumns(10);
-		
+
 		JLabel zong3 = new JLabel("��״Ȩ��(0.00-1.00):");
 		zong3.setFont(new Font("����", Font.PLAIN, 15));
 		zong3.setBounds(60, 730, 180, 25);
@@ -204,7 +209,7 @@ public class main {
 		text3.setBounds(220, 730, 50, 25);
 		frame.add(text3);
 		text3.setColumns(10);
-		
+
 		JButton b4 = new JButton("�ۺϼ���");
 		b4.setFont(new Font("����", Font.PLAIN, 15));
 		b4.setBounds(100, 780, 130, 30);
@@ -220,7 +225,7 @@ public class main {
 				}//�����ۺϼ���
 			}
 		});
-		
+
 		frame.setVisible(true);
 	}
 	public String TanChuang1(){
@@ -241,7 +246,7 @@ public class main {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} 
+			}
 		     JOptionPane.showMessageDialog(null, "δѡ��ͼ��","��ʾ",JOptionPane.PLAIN_MESSAGE);
 			System.out.println("��δѡ��ͼ��");
 			return null;
@@ -257,18 +262,18 @@ public class main {
 	    File file1 = new File(colortxt);
 	    if (file1.exists()) {
 	      	file1.delete();
-        } 
+        }
 	    File file2 = new File(texturetxt);
 	    if (file2.exists()) {
 	      	file2.delete();
-        } 
+        }
 		File file3 = new File(shapetxt);
 	    if (file3.exists()) {
 	      	file3.delete();
-        } 
-	    FileWriter writer = new FileWriter(pathtxt, true);  
+        }
+	    FileWriter writer = new FileWriter(pathtxt, true);
 		new getPicture().find(writer,filepic, "\\S+\\.jpg");
-		writer.close(); 
+		writer.close();
 		//��ȡ�����ļ����������ļ�
 		getColor get1 = new getColor();
 		getTexture get2 = new getTexture();
@@ -281,13 +286,13 @@ public class main {
 			get1.save_feature(get1.color_HSV_msv(paths.get(i)),colortxt);
 		}
 		//��������
-		
+
 		for(int i=0;i<length;i++) {
 			System.out.println(paths.get(i));
 			get2.save_feature(get2.texture(paths.get(i)),texturetxt);
 		}
 		//��״����
-		
+
 		for(int i=0;i<length;i++) {
 			System.out.println(paths.get(i));
 			get3.save_feature(get3.shape(paths.get(i)),shapetxt);
@@ -367,8 +372,8 @@ public class main {
         /*for(int i=0;i<12;i++) {
         	System.out.println(paths.get(i));
         }*/
-       
-        
+
+
         int i=0;
         for(int y=70;y<700;y+=240){
         	for(int x=400;x<1600;x+=320){
@@ -379,7 +384,7 @@ public class main {
 	        		imgpath[i].setText(i+1+":"+paths.get(i));
 	        		imgpath[i].setFont(new Font("����", Font.PLAIN, 12));
 	        		imgpath[i].setBounds(x, y+205, 300, 20);
-	        		
+
 	        		frame.add(img[i]);
 	        		frame.add(imgpath[i]);
 	        		i++;
@@ -431,14 +436,14 @@ public class main {
 	        		imgpath[i].setText(i+1+":"+paths.get(i));
 	        		imgpath[i].setFont(new Font("����", Font.PLAIN, 12));
 	        		imgpath[i].setBounds(x, y+205, 300, 20);
-	        		
+
 	        		frame.add(img[i]);
 	        		frame.add(imgpath[i]);
 	        		i++;
         		}
         	}
         }
-        
+
 	}
 	//基于形状检索
 		public void shape() throws Exception {
@@ -484,15 +489,15 @@ public class main {
 		        		imgpath[i].setText(i+1+":"+paths.get(i));
 		        		imgpath[i].setFont(new Font("����", Font.PLAIN, 12));
 		        		imgpath[i].setBounds(x, y+205, 300, 20);
-		        		
+
 		        		frame.add(img[i]);
 		        		frame.add(imgpath[i]);
 		        		i++;
 	        		}
 	        	}
 	        }
-	       
-	}	
+
+	}
 		//�ۺ�
 		public void zonghe() throws Exception {
 			if(filepath == null) {
@@ -557,16 +562,16 @@ public class main {
 		        		imgpath[i].setText(i+1+":"+paths.get(i));
 		        		imgpath[i].setFont(new Font("����", Font.PLAIN, 12));
 		        		imgpath[i].setBounds(x, y+205, 300, 20);
-		        		
+
 		        		frame.add(img[i]);
 		        		frame.add(imgpath[i]);
 		        		i++;
 	        		}
 	        	}
 	        }
-	       
+
 	}
-		
+
 	//�Ƚ�����ֵ ŷ�Ͼ���
     public double Compare_color(double[] a,double[] b) {
 	    double D,sum=0;

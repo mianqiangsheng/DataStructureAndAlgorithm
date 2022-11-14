@@ -33,9 +33,9 @@ public class UniversalHash {
     public static void main(String[] args) {
         int count =0;
         Random random = new Random(10);
-        int x = universalHash(random.nextInt(1000),1,2,10);
+        int x = universalHash(random.nextInt(1000),1,2,100);
         for (int i =0;i<10000;i++){
-            int y = universalHash(random.nextInt(1000),1,2,10);
+            int y = universalHash(random.nextInt(1000),1,2,100);
             if (x==y){
                 count++;
             }

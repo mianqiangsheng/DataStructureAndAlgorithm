@@ -16,15 +16,15 @@ public class getTexture {
 	public ArrayList<String> getPath(String path_file){
 		ArrayList<String> paths = new ArrayList<>();
 		try {
-			FileReader fr = new FileReader(path_file);	
-			BufferedReader bf = new BufferedReader(fr);		
-			String str;			// 按行读取字符串	
-			while ((str = bf.readLine()) != null) {		
-				paths.add(str);		
-			}		
-			bf.close();		
-			fr.close();		
-			} catch (IOException e) {	
+			FileReader fr = new FileReader(path_file);
+			BufferedReader bf = new BufferedReader(fr);
+			String str;			// 按行读取字符串
+			while ((str = bf.readLine()) != null) {
+				paths.add(str);
+			}
+			bf.close();
+			fr.close();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		return paths;
@@ -47,7 +47,7 @@ public class getTexture {
 		double[] uy=new double[4];
 		double[] ax=new double[4];//相关性的σ
 		double[] ay=new double[4];
-		
+
 	    //降低灰度等级，分成8个区间
 	    for(int i=0;i<height;i++) {
 	    	for(int j=0;j<width;j++) {
@@ -141,21 +141,21 @@ public class getTexture {
 	    y[4] = Math.sqrt(Math.pow(asm[0]-y[0], 2)+Math.pow(asm[1]-y[0], 2)+Math.pow(asm[2]-y[0], 2)+Math.pow(asm[3]-y[0], 2));
 	    y[5] = Math.sqrt(Math.pow(contrast[0]-y[0], 2)+Math.pow(contrast[1]-y[0], 2)+Math.pow(contrast[2]-y[0], 2)+Math.pow(contrast[3]-y[0], 2));;
 	    y[6] = Math.sqrt(Math.pow(correlation[0]-y[0], 2)+Math.pow(correlation[1]-y[0], 2)+Math.pow(correlation[2]-y[0], 2)+Math.pow(correlation[3]-y[0], 2));;
-	    y[7] = Math.sqrt(Math.pow(entropy[0]-y[0], 2)+Math.pow(entropy[1]-y[0], 2)+Math.pow(entropy[2]-y[0], 2)+Math.pow(entropy[3]-y[0], 2));;	   
+	    y[7] = Math.sqrt(Math.pow(entropy[0]-y[0], 2)+Math.pow(entropy[1]-y[0], 2)+Math.pow(entropy[2]-y[0], 2)+Math.pow(entropy[3]-y[0], 2));;
         return y;
     }
 	//保存纹理特征
 	public void save_feature(double[] data,String path) throws IOException {
-		
-	    FileWriter writer = new FileWriter(path, true);  
+
+	    FileWriter writer = new FileWriter(path, true);
 	    String datas = "" + data[0];
 		for(int i=1;i<8;i++) {
-			datas = datas + ";" + data[i];   
+			datas = datas + ";" + data[i];
 		}
-		writer.write(datas+System.getProperty("line.separator"));   
-		writer.close(); 
+		writer.write(datas+System.getProperty("line.separator"));
+		writer.close();
 	}
 
-	
+
 
 }
