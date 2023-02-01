@@ -40,6 +40,8 @@ AVL树,自带平衡条件的二叉查找树
 Junit4使用——
 ### GcdTest
 
+JMH使用——
+
 图形相似算法
 picture.similarity.ShapeAlgorithm 基于形状判断
 可以另外基于颜色、纹理
