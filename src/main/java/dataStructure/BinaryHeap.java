@@ -1,6 +1,9 @@
 package dataStructure;
 
 /**
+ * 二叉堆
+ * 完全二叉树，即：每个节点都大于等于（或者小于等于）子节点。需要注意的是，兄弟节点的相对大小是不重要的。
+ *
  * Created by lizhen on 2018/9/19.
  */
 public class BinaryHeap<T extends Comparable<? super T>> {

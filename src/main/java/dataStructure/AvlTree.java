@@ -6,6 +6,12 @@ import java.util.Random;
  * Created by lizhen on 2018/7/23.
  *
  * AVL树
+ * 只有左右2个子节点
+ * 左子树上所有结点的值均不大于它的根结点的值
+ * 右子树上所有结点的值均不小于它的根结点的值
+ * 它是一棵空树或它的左右两个子树的高度差的绝对值不超过1
+ * 左右两个子树 也都是一棵平衡二叉树
+ *
  * @param <T>
  */
 public class AvlTree<T extends Comparable<? super T>> {
