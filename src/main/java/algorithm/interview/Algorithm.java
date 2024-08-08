@@ -222,7 +222,7 @@ public class Algorithm {
             for(int j=0;j<i1;j++){
                 sb.append(" ");
             }
-            int i2 = 2*(i+1) - 1;
+            int i2 = 2*i+1;
             for(int j=0;j<i2;j++){
                 sb.append("*");
             }
@@ -537,10 +537,10 @@ public class Algorithm {
         int i = 0, j = 0;
 
         while (i < str.length && j < pattern.length){
-            if (j == -1 || str[i] == pattern[j]){
+            if (j == -1 || str[i] == pattern[j]){ //如果i元素和j元素相同，则继续移动i和j进行匹配
                 i++;
                 j++;
-            }else {
+            }else {  //如果不等，则从前面推出的next[]中找到下标使得i元素和j元素相同，重新开始匹配
                 j = next[j];
             }
         }
@@ -573,14 +573,14 @@ public class Algorithm {
         int i = 0, j = -1;
 
         while (i < pattern.length){
-            if (j == -1 ){
+            if (j == -1 ){ //重置j，从头开始匹配
                 i++;
                 j++;
-            }else if (pattern[i] == pattern[j]){
+            }else if (pattern[i] == pattern[j]){ //如果i元素和j元素相同，则记录next[i+1]的值为当前累计的j
                 i++;
                 j++;
                 next[i] = j;
-            }else {
+            }else { //如果不等，则从前面推出的next[]中找到下标使得i元素和j元素相同
                 j = next[j];
             }
         }
@@ -730,6 +730,224 @@ public class Algorithm {
 
     }
 
+    /**
+     * 将数组中0元素移动到最后，保持其他剩余元素顺序不变
+     * Input: [1,0,1,2,0,1,3]
+     * Output: [1,1,2,1,3,0,0]
+     * @param arr
+     * @return
+     */
+    public static int[] moveZero(int[] arr){
+
+        int[] result = new int[arr.length];
+
+        int j = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] != 0){
+                result[j++] = arr[i];
+            }else {
+                result[arr.length - 1 - j] = arr[i];
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * https://blog.csdn.net/chenxy_bwave/article/details/123911967
+     * @param password
+     * @return
+     */
+    public static String solution2(String password) {
+        // 1234567890Abcd
+        //排序字符，进行重复字符计数+字符类型计数
+        char[] charArray = password.toCharArray();
+
+        boolean hasNumber =false;
+        boolean hasLow =false;
+        boolean hasUpper =false;
+
+        if(charArray.length < 8 || charArray.length > 22) {
+            throw new UnsupportedOperationException("length must between 8 to 22");
+        }
+
+        for(int i = 0;i<charArray.length - 2;i++){
+            if(charArray[i] == charArray[i+1] && charArray[i+1] == charArray[i+2]){
+                return "weak";
+            }
+            if(charArray[i] >= 97 && charArray[i] <= 122) {
+                hasLow = true;
+            }
+            if(charArray[i] >= 65 && charArray[i] <= 90) {
+                hasUpper = true;
+            }
+            if(charArray[i] >= 48 && charArray[i] <= 57) {
+                hasNumber = true;
+            }
+
+            if(i == charArray.length - 3){
+                if(charArray[i+1] > 97 && charArray[i+1] <= 122 || charArray[i+2] > 97 && charArray[i+2] <= 122) {
+                    hasLow = true;
+                }
+                if(charArray[i+1] > 65 && charArray[i+1] <= 90 || charArray[i+2] > 65 && charArray[i+2] <= 90) {
+                    hasUpper = true;
+                }
+                if(charArray[i+1] > 48 && charArray[i+1] <= 57 || charArray[i+2] > 48 && charArray[i+2] <= 57) {
+                    hasNumber = true;
+                }
+            }
+
+        }
+
+        if(!(hasLow && hasUpper && hasNumber)) {
+            return "weak";
+        }
+
+        return "strong";
+    }
+
+    /**
+     *  判断括号是否使用正确
+     *  () => true
+     *  )(())) => false
+     *
+     *  左括号进栈，右括号判断是否与栈顶元素成对使用。
+     *
+     * @param password
+     * @return
+     */
+    public static boolean validateParenthesis(String password) {
+
+//        char[] charArray = password.toCharArray();
+//
+//        Stack<Character> stack = new Stack<>();
+//
+//        HashMap<Character, Character> map = new HashMap<>();
+//        map.put('(',')');map.put('{','}');map.put('[',']');
+//        Set<Character> left = map.keySet();
+//        Collection<Character> right = map.values();
+//        for (int i = 0; i < charArray.length; i++) {
+//            if (left.contains(charArray[i])){
+//                stack.push(charArray[i]);
+//            }
+//            if (right.contains(charArray[i])){
+//                if (stack.size() > 0 && map.get(stack.peek()).equals(charArray[i])){
+//                    stack.pop();
+//                }else {
+//                    return false;
+//                }
+//            }
+//        }
+//
+//        if (stack.size() == 0){
+//            return true;
+//        }
+//
+//        return false;
+
+        Stack<Character> stack = new Stack<>();
+        for (char c : password.toCharArray()) {
+            if (c == '(')
+                stack.push(')');
+            else if (c == '{')
+                stack.push('}');
+            else if (c == '[')
+                stack.push(']');
+            else if ((c == ')' || c == '}' || c == ']') && (stack.isEmpty() || stack.pop() != c))
+                return false;
+        }
+        return stack.isEmpty();
+    }
+
+    public static void merge(int[] nums1, int m, int[] nums2, int n) {
+
+        /**
+         * 解法1 合并排序算法思想应用
+         */
+//        int index = 0,i = 0, j = 0;
+//        int[] tempArray = new int[m+n];
+//        while(i < m && j < n){
+//            if(nums1[i] >= nums2[j]){
+//                tempArray[index] = nums2[j];
+//                index++;
+//                j++;
+//            }else{
+//                tempArray[index] = nums1[i];
+//                index++;
+//                i++;
+//            }
+//        }
+//        while(i < m){
+//            tempArray[index++] = nums1[i++];
+//        }
+//        while(j < n){
+//            tempArray[index++] = nums2[j++];
+//        }
+//
+//        System.arraycopy(tempArray,0,nums1,0,tempArray.length);
+
+        /**
+         * 解法2 逆序双指针 关键在于从后开始处理
+         */
+        int p1 = m - 1, p2 = n - 1;
+        int tail = m + n - 1;
+        int cur;
+        while (p1 >= 0 || p2 >= 0) {
+            if (p1 == -1) {
+                cur = nums2[p2--];
+            } else if (p2 == -1) {
+                cur = nums1[p1--];
+            } else if (nums1[p1] > nums2[p2]) {
+                cur = nums1[p1--];
+            } else {
+                cur = nums2[p2--];
+            }
+            nums1[tail--] = cur;
+        }
+
+    }
+
+    public static int removeElement(int[] nums, int val) {
+        int result = nums.length;
+
+        for (int i=0;i<result;i++) {
+            if (nums[i] == val) {
+                nums[i--] = nums[--result];
+            }
+        }
+
+        return result;
+    }
+
+    public static void shuffleArray(Integer[] array) {
+        Random random = new Random();
+        for (int i = 0; i < array.length; i++) {
+            int index = random.nextInt(array.length - i) + i;
+            // Swap the current element with the random element
+            int temp = array[i];
+            array[i] = array[index];
+            array[index] = temp;
+        }
+        System.out.println(Arrays.toString(array));
+    }
+
+    public static void shuffleArray1(Integer[] array) {
+        Arrays.sort(array, new Comparator<Integer>() {
+            private Random random = new Random();
+
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return random.nextBoolean() ? -1 : 1;
+            }
+        });
+        System.out.println(Arrays.toString(array));
+    }
+
+    public static void shuffleArray2(Integer[] array) {
+        Collections.shuffle(Arrays.asList(array));
+        System.out.println(Arrays.toString(array));
+    }
+
 
     public static void main(String[] args) {
 //        System.out.println(pivotIndex(new int[]{1,7,3,6,5,6}));
@@ -762,10 +980,10 @@ public class Algorithm {
 //        int[] array = {1, 4, 3, 2, 2, 5, 9};
 //        System.out.println(maxPerimeter(array));
 
-        int[] array = {1, 4, 3, 2, 2, 5, 9};
-        System.out.println(maxScore1(array,0,array.length-1));
-        System.out.println(dp(array));
-        System.out.println(dp1(array));
+//        int[] array = {1, 4, 3, 2, 2, 5, 9};
+//        System.out.println(maxScore1(array,0,array.length-1));
+//        System.out.println(dp(array));
+//        System.out.println(dp1(array));
 
 //        String str = "ABCABCAABCABCD";
 //        String pattern = "ABCABCD";
@@ -782,5 +1000,20 @@ public class Algorithm {
 //        System.out.println(Arrays.toString(advantage(arrayA,arrayB)));
 //        System.out.println(Arrays.toString(advantage1(arrayA,arrayB)));
 
+//        System.out.println(Arrays.toString(moveZero(new int[]{0,0,1})));
+//        System.out.println(solution2("1234567890Abcd"));
+//        System.out.println(validateParenthesis("{a()}a"));
+
+//        int[] nums1 = new int[]{1,99,200};
+//        int[] nums2 = new int[]{4,101,1000};
+//        merge(nums1,1,nums2,1);
+//        System.out.println(Arrays.toString(nums1));
+
+//        removeElement(new int[]{3,1,3},3);
+
+        Integer[] array = new Integer[]{2,7,9,3,1};
+        shuffleArray(array);
+        shuffleArray1(array);
+        shuffleArray2(array);
     }
 }
