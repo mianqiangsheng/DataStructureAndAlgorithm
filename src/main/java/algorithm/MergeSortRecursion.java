@@ -10,7 +10,8 @@ import java.util.Arrays;
 public class MergeSortRecursion {
 
     /**
-     *
+     * 给出一个数组array，left位置到mid位置是已经排序好的子数组A，mid+1位置到right位置是已经排序好的子数组B，
+     * 双指针遍历两个子数组进行排序，是一个归并、治的过程
      * @param array 待排序数组
      * @param left 合并子数组的最左边元素数组下标1
      * @param mid 合并子数组的中间元素数组下标2
@@ -40,6 +41,12 @@ public class MergeSortRecursion {
 
     /**
      * 归并排序，分治-合并
+     *
+     * 递归的过程，给定一个待排序数组，应用分治排序F(array)
+     * 1、查看是否只有一个元素，是则直接返回（递归的退出条件）
+     * 2、拆分成2个子数组
+     * 3、对2个子数组分别应用分治排序F(array)，得到排序好的2个子数组
+     * 4、归并2个排序好的子数组
      *
      * @param all 待排序数组
      * @param left 进行排序的起始元素数组下标1

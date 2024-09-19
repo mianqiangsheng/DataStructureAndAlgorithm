@@ -59,7 +59,7 @@ public class HeapSort {
      * 这里percDown()和swapReferences()构造了一个最大值在根的二叉堆，与原来二叉堆不同的是，二叉堆元素是从数组[0]位置开始的，而不是数组[1]位置
      *
      * @param i 数组进行二叉堆化后，要找出左儿子的元素数组下标
-     * @return 左儿子的数组下标
+     * @return 左儿子的数组下标（按照二叉堆定义，任何节点的左儿子的下标就是2*i+1）
      */
     private static int leftChild(int i){
         return 2*i+1;
@@ -68,7 +68,12 @@ public class HeapSort {
     /**
      * 将待排序数组进行二叉堆化
      *
-     * @param a 待排序数组，这里进行二叉堆堆序化
+     * “下滤”的概念，层序遍历从i位置开始的节点下的所有子节点，将i位置的节点“下滤”到合适的位置，这里将较大的子节点换到i位置
+     * 过程中如果子节点均比i位置节点小，则直接跳出层序遍历；
+     * 如果出现子节点比i位置节点大，则将较大值子节点赋到i位置，继续从较大的子节点继续层序遍历，直到遍历完这颗完全二叉树；
+     * 所以如果i位置下的节点满足二叉堆性质，则调用“下滤”方法后，加入i位置后还是满足二叉堆性质；
+     *
+     * @param a 待排序数组
      * @param i 进行下滤的开始数组下标
      * @param n 进行二叉堆化的逻辑容量，默认是和待排序数组一样大
      * @param <T> 元素类型
@@ -110,10 +115,10 @@ public class HeapSort {
      */
     public static<T extends Comparable<? super T>> void heapSort(T[] a){
         for (int i=a.length/2-1;i>=0;i--)
-            percDown(a,i,a.length); /* 将待排序数组二叉堆化 */
+            percDown(a,i,a.length); /* 将待排序数组二叉堆化：这里从二叉堆最底层开始调用“下滤”方法，最终完成整个数组二叉堆化 */
         for (int i=a.length-1;i>0;i--){
-            swapReferences(a,0,i); /* 将位于下标0的元素和末尾元素互换位置 */
-            percDown(a,0,i); /* 重新调整二叉堆 */
+            swapReferences(a,0,i); /* 将位于下标0的元素和末尾元素互换位置，即将位于根节点最大的值排序到对应位置 */
+            percDown(a,0,i); /* 重新调整二叉堆：由于除了根节点和互换位置的i位置外其他节点都满足二叉堆性质，所以只要排除位置i，将根节点进行“下滤”即实现二叉堆化，循环操作即实现了排序 */
         }
     }
 
