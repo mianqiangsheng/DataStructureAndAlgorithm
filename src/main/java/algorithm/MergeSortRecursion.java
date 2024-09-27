@@ -37,6 +37,28 @@ public class MergeSortRecursion {
         for(int k=0;k<len;k++) {
             array[left++]=(T)tempArray[k];
         }
+
+        /**
+         * 逆序双指针算法进行合并
+         */
+//        Object[] nums2 = new Object[right - mid];
+//        System.arraycopy(array,mid+1,nums2,0,right - mid);
+//        int p1 = mid, p2 = nums2.length - 1;
+//        int tail = right;
+//        T cur;
+//        while (p1 >= left || p2 >= 0) {
+//            if (p1 == left-1) {
+//                cur = (T) nums2[p2--];
+//            } else if (p2 == -1) {
+//                cur = array[p1--];
+//            } else if (array[p1].compareTo((T)nums2[p2]) > 0) {
+//                cur = array[p1--];
+//            } else {
+//                cur = (T)nums2[p2--];
+//            }
+//            array[tail--] = cur;
+//        }
+
     }
 
     /**

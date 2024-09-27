@@ -24,6 +24,26 @@ public class Test {
         }
     }
 
+    public static String insertSort(int[] array){
+
+        if (array.length <= 1){
+            return Arrays.toString(array);
+        }
+
+        for (int i = 1; i < array.length; i++) {
+            int temp = array[i];
+
+            int j = i - 1;
+            while (j>=0 && array[j] > temp){
+                array[j+1] = array[j];
+                j--;
+            }
+            array[j+1] = temp;
+        }
+
+        return Arrays.toString(array);
+    }
+
 
     public static int maxSubArray(int[] array) {
 
@@ -166,219 +186,46 @@ public class Test {
         return "strong";
     }
 
-    public static int removeDuplicates(int[] nums) {
 
-        int pointeri = 0;
-        int pointerj = 1;
-
-        while(pointerj < nums.length){
-            if(nums[pointeri] == nums[pointerj]){
-                pointerj++;
-            }else if(nums[pointeri] != nums[pointerj]){
-                nums[pointeri+1] = nums[pointerj];
-                pointeri++;
-            }
+    public static String feibo(int n){
+        if (n == 0)
+            return "a";
+        if (n == 1)
+            return "b";
+        String[] array = new String[2];
+        array[0] = "a";
+        array[1] = "b";
+        for (int i = 3; i <= n ; i++) {
+            array[(i - 1) & 1] = array[(i - 1)  & 1] + array[(i - 2) & 1];
         }
+        return array[( n - 1)  & 1];
+    }
 
-        return pointeri + 1;
+    public static char mingzhong(int index){
+
+        int i = 0;
+        String pre;
+        String next;
+        do {
+            pre = feibo(i);
+            next = feibo(++i);
+        } while (next.length() < index);
+
+        if (pre.length() == index){
+            return pre.charAt(index-1);
+        }else {
+            return next.charAt(index-pre.length() - 1);
+        }
 
     }
 
-    public static int removeDuplicates1(int[] nums) {
-
-//        int i = 0;
-//        int pointeri = 0;
-//        int pointerj = 1;
-//
-//        while(pointerj < nums.length){
-//            if(nums[pointeri] == nums[pointerj]){
-//                if (pointerj == nums.length - 1){
-//                    if (pointeri == pointerj){
-//                        nums[i] = nums[pointeri];
-//                    }else {
-//                        nums[i] = nums[pointeri];
-//                        nums[i+1] = nums[pointerj];
-//                        i = i + 1;
-//                    }
-//                    return i;
-//                }else {
-//                    pointerj++;
-//                }
-//            }else if(nums[pointeri] != nums[pointerj]){
-//                if (pointerj > pointeri + 1){
-//                    nums[i] = nums[i+1] = nums[pointeri];
-//                    nums[i+2] = nums[pointerj];
-//                    i = i + 2;
-//                }else {
-//                    nums[i] = nums[pointeri];
-//                    nums[i+1] = nums[pointerj];
-//                    i = i + 1;
-//                }
-//
-//                pointeri = pointerj;
-//            }
-//        }
-//
-//        return i+1;
-
-        if (nums.length <=2) {
-            return nums.length;
-        }
-
-        int slow = 2, fast = 2;
-
-        while (fast < nums.length){
-            if(nums[slow - 2] != nums[fast]){ // 这里是关键
-                nums[slow] = nums[fast];
-                slow++;
-            }
-            fast++;
-        }
-        return slow;
-    }
-
-    public static String insertSort(int[] array){
-
-        if (array.length <= 1){
-            return Arrays.toString(array);
-        }
-
-        for (int i = 1; i < array.length; i++) {
-            int temp = array[i];
-
-            int j = i - 1;
-            while (j>=0 && array[j] > temp){
-                array[j+1] = array[j];
-                j--;
-            }
-            array[j+1] = temp;
-        }
-
-        return Arrays.toString(array);
-    }
 
 
-    public static String calculate(String str){
 
-        Deque<String> deque1 = new LinkedList<>();
-        Deque<String> deque2 = new LinkedList<>();
-
-        List<String> strings = new ArrayList<>();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (char c : str.toCharArray()) {
-            if (c != '+' && c != '-' && c != '*' && c != '/'){
-                stringBuilder.append(c);
-            }else {
-                String string = stringBuilder.toString();
-                if (string.length() > 0){
-                    strings.add(string);
-                    stringBuilder.setLength(0);
-                }
-                strings.add(String.valueOf(c));
-            }
-        }
-
-        strings.add(stringBuilder.toString());
-
-        for (int i = 0; i < strings.size(); i+=2) {
-            if (i == strings.size() - 1){
-                if (strings.get(i-1).equals("+") || strings.get(i-1).equals("-")){
-                    deque1.add(strings.get(i));
-                }else {
-                    deque2.add(strings.get(i));
-                }
-            }else {
-                String aChar = strings.get(i);
-                String bChar = strings.get(i+1);
-                if (bChar.equals("+") || bChar.equals("-")){
-                    if (deque2.size() == 0){
-                        deque1.add(aChar);
-                        deque1.add(bChar);
-                    }else{
-                        deque2.add(aChar);
-                        String deque = deque(deque2);
-                        deque1.add(deque);
-                        deque1.add(bChar);
-                    }
-                }else {
-                    deque2.add(aChar);
-                    deque2.add(bChar);
-                }
-            }
-        }
-
-        if (deque2.size() > 0){
-            String deque = deque(deque2);
-            deque1.add(deque);
-        }
-
-        return deque(deque1);
-    }
-
-    public static String deque(Deque<String> deque){
-        while (deque.size() > 1){
-            String[] chars = new String[3];
-            chars[0] = deque.remove();
-            chars[1] = deque.remove();
-            chars[2] = deque.remove();
-            Double cal = cal(chars);
-            deque.push(cal.toString());
-        }
-        return deque.pop();
-    }
-
-    public static Double cal(String[] strings){
-        String param1 = strings[0];
-        String operator = strings[1];
-        String param2 = strings[2];
-        if (operator.equals("+")){
-            return Double.valueOf(param1) + Double.valueOf(param2);
-        }else if (operator.equals("-")){
-            return Double.valueOf(param1) - Double.valueOf(param2);
-        }else if (operator.equals("*")){
-            return Double.valueOf(param1) * Double.valueOf(param2);
-        }else if (operator.equals("/")){
-            return Double.valueOf(param1) / Double.valueOf(param2);
-        }
-        return 0.0;
-    }
 
     public static void main(String[] args) {
-//        int[] array = new int[]{5,2,3,10,7,0};
-//        insertionSort(array,0,array.length-1);
-//        System.out.println(Arrays.toString(array));
-//
-//        int[] nums = new int[]{5,-6,3,-1,0};
-//        int max = maxSubArray(nums);
-//        System.out.println(max);
-//        int max1 = maxSubArray1(nums);
-//        System.out.println(max1);
-//
-//        System.out.println(solution(5));
-//
-//        int i = find(array, 5);
-//        System.out.println(i);
 
-//        System.out.println(solution("1234567890Abcd"));
-
-//        removeDuplicates(new int[]{0,0,1,1,1,1,2,3,3});
-//        removeDuplicates1(new int[]{0,0,1,1,1,1,2,3,3});
-//        removeDuplicates1(new int[]{1,1,1,1,3});
-//        removeDuplicates1(new int[]{1,2});
-
-//        int[] nums = new int[]{5,-6,3,-1,0};
-//        System.out.println(insertSort(nums));
-
-        Deque<String> deque = new LinkedList<>();
-        deque.add("22");
-        deque.add("/");
-        deque.add("11");
-        deque.add("*");
-        deque.add("2");
-        System.out.println(deque(deque));
-
-        String calculate = calculate("3+4*1*2/3*3-10+3*3+10");
-        System.out.println(calculate);
+        char mingzhong = mingzhong(7);
+        System.out.println(mingzhong);
     }
 }

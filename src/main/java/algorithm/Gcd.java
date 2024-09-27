@@ -7,6 +7,7 @@ package algorithm;
 public class Gcd {
 
     /**
+     * 证明：https://www.cnblogs.com/dijkstra2003/p/9797750.html
      * 欧几里得算法——两个正整数a和b（a>b），它们的最大公约数等于a除以b的余数c和b之间的最大公约数。比如10和25，25除以10商2余5，那么10和25的最大公约数，等同于10和5的最大公约数。
      *
      * @param m 正整数m，较大值

@@ -1,6 +1,8 @@
 package algorithm.interview;
 
 
+import org.springframework.util.CollectionUtils;
+
 import java.util.*;
 
 /**
@@ -859,32 +861,39 @@ public class Algorithm {
         return stack.isEmpty();
     }
 
+    /**
+     * 合并两个有序数组
+     * @param nums1
+     * @param m
+     * @param nums2
+     * @param n
+     */
     public static void merge(int[] nums1, int m, int[] nums2, int n) {
 
         /**
          * 解法1 合并排序算法思想应用
          */
-//        int index = 0,i = 0, j = 0;
-//        int[] tempArray = new int[m+n];
-//        while(i < m && j < n){
-//            if(nums1[i] >= nums2[j]){
-//                tempArray[index] = nums2[j];
-//                index++;
-//                j++;
-//            }else{
-//                tempArray[index] = nums1[i];
-//                index++;
-//                i++;
-//            }
-//        }
-//        while(i < m){
-//            tempArray[index++] = nums1[i++];
-//        }
-//        while(j < n){
-//            tempArray[index++] = nums2[j++];
-//        }
-//
-//        System.arraycopy(tempArray,0,nums1,0,tempArray.length);
+        int index = 0,i = 0, j = 0;
+        int[] tempArray = new int[m+n];
+        while(i < m && j < n){
+            if(nums1[i] >= nums2[j]){
+                tempArray[index] = nums2[j];
+                index++;
+                j++;
+            }else{
+                tempArray[index] = nums1[i];
+                index++;
+                i++;
+            }
+        }
+        while(i < m){
+            tempArray[index++] = nums1[i++];
+        }
+        while(j < n){
+            tempArray[index++] = nums2[j++];
+        }
+
+        System.arraycopy(tempArray,0,nums1,0,tempArray.length);
 
         /**
          * 解法2 逆序双指针 关键在于从后开始处理
@@ -907,16 +916,1003 @@ public class Algorithm {
 
     }
 
-    public static int removeElement(int[] nums, int val) {
+    /**
+     * 移除元素
+     * 给你一个数组nums和一个值val，你需要"原地"移除所有数值等于val的元素，并返回移除后数组的新长度。
+     * 不要使用额外的数组空间，你必须仅使用O(1)额外空间并"原地"修改输入数组。元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
+     *
+     * 算法：双指针
+     */
+    public static int removeElement1(int[] nums, int val) {
+        int pointer = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != val) {
+                nums[pointer++] = nums[i];
+            }
+        }
+        System.out.println(Arrays.toString(nums));
+        return pointer;
+    }
+
+    /**
+     * 移除元素
+     * 更简练的写法
+     *
+     * @param nums
+     * @param val
+     * @return
+     */
+    public static int removeElement2(int[] nums, int val) {
         int result = nums.length;
 
         for (int i=0;i<result;i++) {
             if (nums[i] == val) {
-                nums[i--] = nums[--result];
+                nums[i--] = nums[--result]; //遇到相同的元素，i原地踏步，同时把数组尾部开始的元素放到i位置进行再次比较，由于result不断变小，所以for循环可以退出
             }
         }
 
         return result;
+    }
+
+    /**
+     * 获取数组中占半数以上的元素
+     *
+     * 给定一个大小为n的数组nums，返回其中的多数元素。多数元素是指在数组中出现次数大于n/2的元素。你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+     * 尝试设计时间复杂度为O(n)、空间复杂度为O(1)的算法解决此问题。
+     *
+     * Boyer-Moore 投票算法： 如果我们把众数记为+1，把其他数记为−1，将它们全部加起来，显然和大于0，从结果本身我们可以看出众数比其他数多。
+     * @param nums
+     * @return
+     */
+    public static int majorityElement(int[] nums) {
+        /**
+         * 要求数组存在众数
+         */
+        int count = 0; //对当前candidate出现的次数进行计数
+        Integer candidate = null; //记录当前的候选众数
+
+        for (int num : nums) {
+            if (count == 0) {
+                candidate = num; //当当前的candidate次数减为零，则将当前遍历到的num赋为候选众数
+            }
+            count += (num == candidate) ? 1 : -1; //当前遍历到的num等于candidate，则count+1，否则-1
+        }
+
+        return candidate; //遍历到最后的candidate就是众数
+
+
+        /**
+         * 要求数组存在众数
+         */
+//        Arrays.sort(nums);
+//        return (nums[nums.length/2]);
+
+        /**
+         * 最普遍的算法
+         */
+        // 思想： 通过 hashMap 存放 value 和 count , 如果 count > n/2 直接返回
+//        if (nums.length == 0) {
+//            return 0;
+//        }
+//        int mid = nums.length/2;
+//        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+//        for (int i = 0; i < nums.length; i++) {
+//            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+//            if (map.getOrDefault(nums[i], 0) > mid) {
+//                return nums[i];
+//            }
+//        }
+//        return 0;
+
+    }
+
+    /**
+     * 求取数组中最大的差值
+     *
+     * 给定一个数组prices，它的第i个元素prices[i]表示一支给定股票第i天的价格。你只能选择某一天买入这只股
+     * 票，并选择在未来的某一个不同的日子卖出该股票。设计一个算法来计算你所能获取的最大利润。返回你可以从这笔交易中
+     * 获取的最大利润。如果你不能获取任何利润，返回0。
+     *
+     * 算法：双向双指针
+     *
+     * @param prices
+     * @return
+     */
+    public static int maxProfit(int[] prices) {
+        int buyDay = 0;
+        int sellDay = prices.length -1;
+
+        while (buyDay < sellDay){
+            int maxBuyDay = buyDay;
+            int maxSellDay = sellDay;
+            if (prices[buyDay+1] < prices[buyDay]){
+                maxBuyDay = buyDay++;
+            }
+            if (prices[sellDay-1] > prices[sellDay]){
+                maxSellDay = sellDay--;
+            }
+
+            /**
+             * 退出条件，如果买入价和卖出价都到了最优，则跳出
+             */
+            if (maxBuyDay == buyDay && maxSellDay == sellDay)
+                break;
+
+        }
+
+        return prices[sellDay] - prices[buyDay];
+
+        // 思想：1、定义一个最小值，如果下一个元素小于当前值，更新最小值，
+        // 定义一个最大收益，如果当前值大于最小值，求差，并判断是否大于当前最大值
+        // 遍历按顺序取最小值，然后计算当前最小值下的最大收益
+        // 下降趋势中取一个最小值，上升趋势中取一个最大值，然后比较不同这种趋势中的利润，取一个最大值
+//        int minBuyPrice = Integer.MAX_VALUE, maxProfit = 0;
+//        for (int i = 0; i < prices.length; i++) {
+//            if (prices[i] < minBuyPrice) {
+//                minBuyPrice = prices[i];
+//            } else {
+//                maxProfit = Math.max(maxProfit, prices[i] - minBuyPrice);
+//            }
+//        }
+//        return maxProfit;
+
+    }
+
+
+    /**
+     *
+     * 求取数组中累计最大的差值和
+     *
+     * 给你一个整数数组prices，其中prices[i]表示某支股票第i天的价格。在每一天，你可以决定是否购买和/或出售股
+     * 票。你在任何时候最多只能持有一股股票。你也可以先购买，然后在同一天出售。可以多次买卖。求累计你能获得的最
+     * 大利润。
+     *
+     * 算法：动态规划
+     *
+     * @param prices
+     * @return
+     */
+    public static int maxMultiProfit(int[] prices) {
+
+        /**
+         * 基于价格下降段买入，价格上升段卖出的理念
+         */
+//        int temBuyPrice = Integer.MAX_VALUE, temSellPrice = 0, maxProfit = 0;
+//        for (int i = 0; i < prices.length; i++) {
+//            if (prices[i] < temBuyPrice) {
+//                temBuyPrice = prices[i];
+//            } else {
+//                if (prices[i]>temSellPrice){
+//                    temSellPrice = prices[i];
+//                }else {
+//                    maxProfit += temSellPrice - temBuyPrice;
+//                    temBuyPrice = prices[i];
+//                    temSellPrice = 0;
+//                }
+//            }
+//        }
+//
+//        if (temSellPrice - temBuyPrice > 0){
+//            maxProfit += temSellPrice - temBuyPrice;
+//        }
+//
+//        return maxProfit;
+
+        /**
+         * 动态规划：将问题化为不同状态之间的转换过程
+         *
+         * 定义状态dp[i][0]表示第i天交易完后手里没有股票的最大利润，dp[i][1]表示第i天交易完后手里持有一支股票的最大利润（i从0开始）。
+         * 考虑dp[i][0]的转移方程，如果这一天交易完后手里没有股票，那么可能的转移状态为前一天已经没有股票，即dp[i−1][0]，或者前一天
+         * 结束的时候手里持有一支股票，即dp[i−1][1]，这时候我们要将其卖出，并获得prices[i]的收益。因此为了收益最大化，我们列出如下的
+         * 转移方程：dp[i][0]=max{dp[i−1][0],dp[i−1][1]+prices[i]}
+         *
+         * 再来考虑dp[i][1]，按照同样的方式考虑转移状态，那么可能的转移状态为前一天已经持有一支股票，即dp[i−1][1]，或者前一天结束时还
+         * 没有股票，即dp[i−1][0]，这时候我们要将其买入，并减少prices[i]的收益。
+         * 可以列出如下的转移方程：dp[i][1]=max{dp[i−1][1],dp[i−1][0]−prices[i]}
+         *
+         * 对于初始状态，根据状态定义我们可以知道第0天交易结束的时候dp[0][0]=0，dp[0][1]=−prices
+         *
+         * 因此，我们只要从前往后依次计算状态即可。由于全部交易结束后，持有股票的收益一定低于不持有股票的收益，因此这时
+         * 候dp[n−1][0]的收益必然是大于dp[n−1][1]的，最后的答案即为dp[n−1][0]。
+         */
+        if (prices.length < 2) {
+            return 0;
+        }
+        // 思路：通过二维数组表示当前的两种状态 prices[i][0] 表示持有现金 prices[i][1]表示持有股票，每次遍历获取Max
+        int[][] dp = new int[prices.length][2];
+
+        // 初始化0
+        dp[0][0] = 0;
+        dp[0][1] = -prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i-1][1], dp[i-1][0] - prices[i]);
+        }
+        return dp[prices.length - 1][0];
+
+        //注意到上面的状态转移方程中，每一天的状态只与前一天的状态有关，而与更早的状态都无关，因此我们不必存储这些无关的状态，只需要将dp[i−1][0]和dp[i−1][1]存放在两个变量中
+//        int n = prices.length;
+//        int dp0 = 0, dp1 = -prices[0];
+//        for (int i = 1; i < n; ++i) {
+//            int newDp0 = Math.max(dp0, dp1 + prices[i]);
+//            int newDp1 = Math.max(dp1, dp0 - prices[i]);
+//            dp0 = newDp0;
+//            dp1 = newDp1;
+//        }
+//        return dp0;
+
+
+        /**
+         * 贪心算法：将总体的最优问题分解成局部的最优问题
+         *
+         * 理解成每隔1天即观察是否有盈利空间，累加每一天可能的利润，即为所能取得的最大利润
+         *
+         */
+//        public int maxProfit(int[] prices) {
+//            int ans = 0;
+//            int n = prices.length;
+//            for (int i = 1; i < n; ++i) {
+//                ans += Math.max(0, prices[i] - prices[i - 1]);
+//            }
+//            return ans;
+//        }
+
+    }
+
+
+    /**
+     * 加油站路线规划问题
+     *
+     * 算法：找到关键过程等式
+     *
+     * @param gas
+     * @param cost
+     * @return
+     */
+    public static int canCompleteCircuit(int[] gas, int[] cost) {
+
+        for (int start = 0; start < gas.length; start++) {
+            boolean found = true;
+            int leftGas = gas[start];
+            int current = start;
+            do {
+                int next = (current + 1) % gas.length;
+                leftGas = leftGas + gas[next] - cost[current];
+                current = next;
+
+                if (leftGas < cost[next]){
+                    found = false;
+                    start = current; //从断掉的节点处开始重新遍历，前面的节点无须再遍历
+                    break;
+                }
+
+            } while (start != current);
+
+            if (found){
+                return start;
+            }else {
+                start += 1; //如果遍历到初始点断掉，则从后一个节点重新遍历
+            }
+        }
+
+        return -1;
+
+
+//        int len = gas.length; // 外层我只遍历一次即可
+//        int i = 0;
+//        while (i < len) {
+//            // 每次进来都是重新判断是否可以走完全程，所以总的加油和耗油都是0
+//            int sumGas = 0, sumCost = 0;
+//            int count = 0;
+//            // 确定子循环的次数
+//            while (count < len) {
+//                // i是变化的，所以我们要去摸获取下标
+//                int cur = (i + count) % len ;
+//                // 判断加油是否大于耗油
+//                sumCost += cost[cur];
+//                sumGas += gas[cur];
+//                if (sumCost > sumGas) {
+//                    break;
+//                }
+//                count++;
+//            }
+//
+//            // 当 count == len 的时候表示循环完毕，i就是符合条件的
+//            if (count == len) {
+//                return i;
+//            }
+//            i = i + count + 1;
+//        }
+//        return -1;
+
+    }
+
+    /**
+     * 跳跃游戏
+     *
+     * @param nums
+     * @return
+     */
+    public static boolean canJump(int[] nums){
+
+//        int length = nums.length;
+//
+//        /**
+//         * 第i个节点
+//         * 可走步长 step = [1,nums[i]]
+//         * 选择某个步长 step，走到下一个节点，
+//         *
+//         * nums[i+step]
+//         * 可走步长 step = [1,nums[i+step]]
+//         * 选择某个步长 step，走到第下一个节点，
+//         *
+//         * ......
+//         *
+//         * 直到走到nums[length - 1]
+//         *
+//         */
+//
+//        int stepScope = nums[0]; //标识为当前节点可选最大步长
+//        int pre = 0; //标识为上一个节点
+//
+//        while (stepScope > 0){ //如果到某个节点的可选步长是零，还未返回true，说明不存在这样的路径
+//            int maxStep = 0;
+//            int next = 0;
+//            for (int step = 1; step <= stepScope; step++) { //从当前节点可选步长中选择一个
+//                int s = step + nums[pre + step]; //获取当前步长下的最大可能步长
+//
+//                if (s > maxStep){
+//                    next = pre + step; //选择其中最长的作为下一个节点
+//                    maxStep = s;
+//                }
+//                if (step == stepScope){ //当把当前所有可能的步长尝试完后
+//                    if (next >= length-1){ //如果下一个节点序号已经大于数组最大序号，则返回true
+//                        return true;
+//                    }
+//                    pre = next; //将选择的下一个节点赋给pre节点
+//                    stepScope = nums[pre]; //将pre节点的可选步长赋给stepScope
+//                }
+//            }
+//        }
+//
+//        return false;
+
+
+        /**
+         * 如果走到当前点时的最大步长：pathlen = Math.max(pathlen, i + nums[i])
+         */
+        if (nums == null || nums.length == 0) {
+            return false;
+        }
+        int len = nums.length;
+        int pathlen = 0;
+        // 如果可达路径大于等于下表表示可达，则判断是否大于数组的长度-1；
+        for (int i = 0; i < len; i++) {
+            if (pathlen >= i) { //当前最大步长允许走到i位置的话，看是否可以获得一个更大的最大步长
+                pathlen = Math.max(pathlen, i + nums[i]);
+
+                if (pathlen >= len - 1) { //看此时的pathlen，是否已经大于等于数组最大序号
+                    return true;
+                }
+            }
+        }
+        return false;
+
+
+    }
+
+    /**
+     *
+     * 跳跃游戏
+     *
+     * 返回到达nums[n - 1]的最小跳跃次数。
+     *
+     * @param nums
+     * @return
+     */
+    public static int jump(int[] nums){
+
+//        int jumpCount = 0;
+//
+//        int nextIndex = nums.length - 1;
+//        int preIndex = nums.length - 2;
+//
+//        while (preIndex >= 0){
+//            for (int i = preIndex; i >= 0 ; i--) {
+//                if( i + nums[i] >= nextIndex){
+//                    if (i < preIndex){
+//                        preIndex = i;
+//                    }
+//                }
+//
+//                if (i == 0){
+//                    jumpCount++;
+//                    if (preIndex == 0){
+//                        return jumpCount;
+//                    }
+//                    nextIndex = preIndex;
+//                    preIndex = nextIndex - 1;
+//                    break;
+//                }
+//            }
+//        }
+//
+//        return jumpCount;
+
+
+        /**
+         * 从后往前选择距离最远（从0开始尝试）且步长>=position的下标，然后继续这样寻找再前一个下标，直到position=0
+         */
+        int position = nums.length - 1;
+        int steps = 0;
+        while (position > 0) {
+            for (int i = 0; i < position; i++) {
+                if (i + nums[i] >= position) {
+                    position = i;
+                    steps++;
+                    break;
+                }
+            }
+        }
+        return steps;
+    }
+
+
+    /**
+     * 删除有序数组中的重复项
+     *
+     * 给你一个非严格递增排列的数组nums，请你原地删除重复出现的元素，使每个元素只出现一次，返回删除后数组的新长
+     * 度。元素的相对顺序应该保持一致。然后返回nums中唯一元素的个数。
+     *
+     * 算法：快慢双指针
+     *
+     * @param nums
+     * @return
+     */
+    public static int removeDuplicates(int[] nums) {
+
+        int pointeri = 0;
+        int pointerj = 1;
+
+        while(pointerj < nums.length){
+            if(nums[pointeri] != nums[pointerj]){
+                nums[++pointeri] = nums[pointerj];
+            }
+            pointerj++;
+        }
+
+        return pointeri + 1;
+
+    }
+
+    /**
+     * 给你一个有序数组nums，请你原地删除重复出现的元素，使得出现次数超过两次的元素只出现两次 ，返回删除后数组的
+     * 新长度。不要使用额外的数组空间，你必须在原地修改输入数组并在使用O(1)额外空间的条件下完成。
+     *
+     * 算法：快慢双指针(慢指针起始位置变为+2)
+     *
+     * @param nums
+     * @return
+     */
+    public static int removeTwiceDuplicates(int[] nums) {
+
+        //        int i = 0;
+//        int pointeri = 0;
+//        int pointerj = 1;
+//
+//        while(pointerj < nums.length){
+//            if(nums[pointeri] == nums[pointerj]){
+//                if (pointerj == nums.length - 1){
+//                    if (pointeri == pointerj){
+//                        nums[i] = nums[pointeri];
+//                    }else {
+//                        nums[i] = nums[pointeri];
+//                        nums[i+1] = nums[pointerj];
+//                        i = i + 1;
+//                    }
+//                    return i;
+//                }else {
+//                    pointerj++;
+//                }
+//            }else if(nums[pointeri] != nums[pointerj]){
+//                if (pointerj > pointeri + 1){
+//                    nums[i] = nums[i+1] = nums[pointeri];
+//                    nums[i+2] = nums[pointerj];
+//                    i = i + 2;
+//                }else {
+//                    nums[i] = nums[pointeri];
+//                    nums[i+1] = nums[pointerj];
+//                    i = i + 1;
+//                }
+//
+//                pointeri = pointerj;
+//            }
+//        }
+//
+//        return i+1;
+
+//        int pointeri = 0;
+//        int pointerj = 1;
+//
+//        boolean duplicate = false;
+//
+//        while(pointerj < nums.length){
+//            if(nums[pointeri] != nums[pointerj]){
+//                nums[++pointeri] = nums[pointerj];
+//                duplicate = false;
+//            }else if (!duplicate){
+//                nums[++pointeri] = nums[pointerj];
+//                duplicate = true;
+//            }
+//            pointerj++;
+//        }
+//
+//        return pointeri + 1;
+
+        // 思路：定义快慢两个指针fast slow 当 fast == fast - 2 时，替换掉当前元素
+        if (nums.length < 3) {
+            return 2;
+        }
+        int slow = 2, fast = 2;
+        while (fast < nums.length) {
+            // 这里需要用slow去-2
+            if (nums[slow - 2] != nums[fast]) {
+                nums[slow++] = nums[fast];
+            }
+            fast++;
+        }
+        return slow;
+
+    }
+
+    /**
+     * 返回字符串最长公共字符串
+     *
+     * 编写一个函数来查找字符串数组中的最长公共前缀。如果不存在公共前缀，返回空字符串""。
+     *
+     *
+     * @param strs
+     * @return
+     */
+    public static String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+
+        // 思想：纵向比较：以strs[0]作为比较基本，循环依次取Char与其它元素进行比较，不相同直接退出即可。
+        String prex = strs[0];
+        for (int i = 0; i < prex.length(); i++) {
+            // 获取比较的元素
+            char p = prex.charAt(i);
+            // 遍历其它元素，但是其它元素可能并没有第一个元素长，可以先比较长度
+            for (int j = 1; j < strs.length; j++) {
+                if (i == strs[j].length() || strs[j].charAt(i) != p) {
+                    return prex.substring(0,i);
+                }
+            }
+        }
+        return prex;
+    }
+
+    /**
+     * 给你一个整数数组nums和一个整数k，判断数组中是否存在两个不同的索引i和j，满足nums[i] == nums[j]且
+     * abs(i - j) <= k。如果存在，返回true；否则，返回false。
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public static boolean containsNearbyDuplicate(int[] nums, int k) {
+
+//        for (int i = 0; i < nums.length - 1; i++) {
+//            int j = i+1;
+//            while (j < nums.length){
+//                if (nums[i] == nums[j++]){
+//                    int len = j - i - 1;
+//                    if (len <= k){
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
+//
+//        return false;
+
+        for (int i = 0; i < nums.length - k; i++) {
+            for (int j = i+1; j < i+k+1; j++) {
+                if (nums[i] == nums[j]){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     *
+     * 轮转数组
+     *
+     * 给定一个整数数组nums，将数组中的元素向右轮转k个位置，其中k是非负数。
+     *
+     *
+     * @param nums
+     * @param k
+     */
+    public static void rotate(int[] nums, int k) {
+
+//        int[] temp = new int[nums.length];
+//        System.arraycopy(nums,0,temp,0,nums.length);
+//
+//        for (int i = 0; i < temp.length; i++) {
+//            int index = (i+k) % nums.length;
+//            nums[index] = temp[i];
+//        }
+
+        int n = nums.length;
+        int count = gcd(k, n); //计算出需要遍历的圈数，最小公约数
+        for (int start = 0; start < count; ++start) { //按k的步数遍历直到回到起始点，完成一圈
+            int current = start;
+            int prev = nums[start];
+            do {
+                int next = (current + k) % n;
+                int temp = nums[next];
+                nums[next] = prev;
+                prev = temp;
+                current = next;
+            } while (start != current);
+        }
+    }
+
+    /**
+     * 欧几里得算法
+     * @param x
+     * @param y
+     * @return
+     */
+    public static int gcd(int x, int y) {
+        return y > 0 ? gcd(y, x % y) : x;
+    }
+
+    /**
+     * 分发糖果
+     *
+     * n个孩子站成一排。给你一个整数数组ratings表示每个孩子的评分。你需要按照以下要求，给这些孩子分发糖果：
+     * 【1】每个孩子至少分配到1个糖果
+     * 【2】相邻两个孩子评分更高的孩子会获得更多的糖果。
+     * 请你给每个孩子分发糖果，计算并返回需要准备的 最少糖果数目。
+     *
+     * @param ratings
+     * @return
+     */
+    public static int candy(int[] ratings) {
+
+//        int[] nums = new int[ratings.length];
+//
+//        for (int i = 0; i < ratings.length - 1; i++) {
+//            if (ratings[i] < ratings[i+1]){
+//                if (i == 0){
+//                    nums[i] = 1;
+//                }
+//                nums[i+1] = nums[i] + 1;
+//            }else if (ratings[i] == ratings[i+1]){
+//                if (i == 0){
+//                    nums[i] = 1;
+//                }
+//                nums[i+1] = nums[i];
+//            }else if (ratings[i] > ratings[i+1]){
+//                if (i == 0){
+//                    nums[i] = 2;
+//                }
+//                nums[i+1] = nums[i] - 1;
+//            }
+//        }
+//
+//        System.out.println(Arrays.toString(nums));
+//
+//        int[] tem = new int[nums.length];
+//        System.arraycopy(nums,0,tem,0,nums.length);
+//
+//        int sum = 0;
+//        for (int i = nums.length - 1; i > 0; i--) {
+//            if (nums[i] < nums[i-1]){
+//                if (tem[i] < 1){
+//                    tem[i] = 1;
+//                }
+//
+//                tem[i-1] = tem[i] + 1;
+//            }
+//
+//            sum += tem[i];
+//        }
+//
+//        sum += tem[0];
+//
+//        System.out.println(Arrays.toString(tem));
+//
+//        return sum;
+
+//        // 1、定义left[]数组，计算每个小朋友符合左侧规则时，能获取到的糖果
+//        // 2、定义两个变量，第一个计算前一个小朋友的糖果，第二个计算总的糖果数量，从右侧开始计算
+//        if (ratings.length == 0) {
+//            return 0;
+//        }
+//        // 创建数组
+//        int[] left = new int[ratings.length];
+//        left[0] = 1;
+//        for(int i = 1; i < ratings.length; i++) {
+//            if (ratings[i] > ratings[i - 1]) {
+//                left[i] = left[i - 1] + 1;
+//            } else {
+//                left[i] = 1;
+//            }
+//        }
+//        // 先初始化最后一个小朋友的糖果
+//        int next = 1, count = Math.max(1, left[ratings.length - 1]);
+//        for(int i = ratings.length - 2; i >= 0; i--) {
+//            if (ratings[i] > ratings[i + 1]) {
+//                next += 1;
+//            } else {
+//                next = 1;
+//            }
+//            count += Math.max(next, left[i]);
+//        }
+//        return count;
+
+
+        // 1、定义两个变量，第一个计算当前小朋友的糖果pre，第二个计算总的糖果数量count。
+        // 2、左侧遍历时，如果时递减的情况，需要再创建一个变量，计算递减的次数 decr。
+        // 3、特殊处理：递减的时候，如果我拥有的糖果和递减前小朋友的糖果个数相同时，需要++，举例：5321的时候，5有3个糖果，此时的3再递减中也会有5个糖果，所以就需要对5的糖果+1
+        if (ratings.length == 0) {
+            return 0;
+        }
+
+        // 先初始化最后一个小朋友的糖果
+        int pre = 1, count = 1, decr = 0, inc = 1;
+        for(int i = 1; i < ratings.length; i++) {
+            if (ratings[i] >= ratings[i - 1]) { //递增时，直接加
+                pre = ratings[i] == ratings[i - 1] ? 1 : pre + 1;;
+                // 如果时递增的，当前递减序列结束
+                decr = 0;
+                count += pre;
+
+                // pre表示当前小朋友用于的当过
+                inc = pre;
+            } else { //递减时，累加递减的次数，当递减次数=递减的最高点时，补上decr+1
+                // 如果开始了递减序列，我们就开始记录递减序列的长度
+                decr++;
+                // 递减的时候，如果我拥有的糖果和递减的小朋友的个数相同时，需要++，举例：5321的时候，5有3个糖果，此时的3再递减中也会有5个糖果，所以就需要对5+1
+                if (inc == decr) {
+                    decr++;
+                }
+                // 重置糖果为1
+                pre = 1;
+                count += decr;
+            }
+        }
+        return count;
+
+
+    }
+
+
+    /**
+     * 计算数学表达式（自己的思路实现）
+     * @param str
+     * @return
+     */
+    public static String calculate(String str){
+
+        Deque<String> deque1 = new LinkedList<>();
+        Deque<String> deque2 = new LinkedList<>();
+
+        List<String> strings = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (char c : str.toCharArray()) {
+            if (c != '+' && c != '-' && c != '*' && c != '/'){
+                stringBuilder.append(c);
+            }else {
+                String string = stringBuilder.toString();
+                if (string.length() > 0){
+                    strings.add(string);
+                    stringBuilder.setLength(0);
+                }
+                strings.add(String.valueOf(c));
+            }
+        }
+
+        strings.add(stringBuilder.toString());
+
+        for (int i = 0; i < strings.size(); i+=2) {
+            if (i == strings.size() - 1){
+                if (strings.get(i-1).equals("+") || strings.get(i-1).equals("-")){
+                    deque1.add(strings.get(i));
+                }else {
+                    deque2.add(strings.get(i));
+                }
+            }else {
+                String aChar = strings.get(i);
+                String bChar = strings.get(i+1);
+                if (bChar.equals("+") || bChar.equals("-")){
+                    if (deque2.size() == 0){
+                        deque1.add(aChar);
+                        deque1.add(bChar);
+                    }else{
+                        deque2.add(aChar);
+                        String deque = deque(deque2);
+                        deque1.add(deque);
+                        deque1.add(bChar);
+                    }
+                }else {
+                    deque2.add(aChar);
+                    deque2.add(bChar);
+                }
+            }
+        }
+
+        if (deque2.size() > 0){
+            String deque = deque(deque2);
+            deque1.add(deque);
+        }
+
+        return deque(deque1);
+    }
+
+    public static String deque(Deque<String> deque){
+        while (deque.size() > 1){
+            String[] chars = new String[3];
+            chars[0] = deque.remove();
+            chars[1] = deque.remove();
+            chars[2] = deque.remove();
+            Double cal = cal(chars);
+            deque.push(cal.toString());
+        }
+        return deque.pop();
+    }
+
+    public static Double cal(String[] strings){
+        String param1 = strings[0];
+        String operator = strings[1];
+        String param2 = strings[2];
+        if (operator.equals("+")){
+            return Double.valueOf(param1) + Double.valueOf(param2);
+        }else if (operator.equals("-")){
+            return Double.valueOf(param1) - Double.valueOf(param2);
+        }else if (operator.equals("*")){
+            return Double.valueOf(param1) * Double.valueOf(param2);
+        }else if (operator.equals("/")){
+            return Double.valueOf(param1) / Double.valueOf(param2);
+        }
+        return 0.0;
+    }
+
+
+    enum SYMBOL{
+        ADD("+",1),
+        MINUS("-",1),
+        MULTIPLY("*",2),
+        DIVIDE("/",2);
+
+        private String s;
+        private int priority;
+        SYMBOL(String s, int i) {
+            this.s = s;
+            this.priority = i;
+        }
+        static SYMBOL getBySymbol(String mark){
+            SYMBOL[] values = SYMBOL.values();
+            for (SYMBOL symbol : values) {
+                if (symbol.s.equals(mark)){
+                    return symbol;
+                }
+            }
+            return null;
+        }
+
+        String calculate(String num1,String num2){
+            String result = null;
+            if (this.equals(ADD)){
+                result = String.valueOf(Double.parseDouble(num1) + Double.parseDouble(num2));
+            }else if (this.equals(MINUS)){
+                result = String.valueOf(Double.parseDouble(num1) - Double.parseDouble(num2));
+            }else if (this.equals(MULTIPLY)){
+                result = String.valueOf(Double.parseDouble(num1) * Double.parseDouble(num2));
+            }else if (this.equals(DIVIDE)){
+                result = String.valueOf(Double.parseDouble(num1) / Double.parseDouble(num2));
+            }
+
+            return result;
+        }
+    }
+
+    /**
+     * 计算数学表达式（按照https://it-blog-cn.com/blogs/algorithm/stack.html）
+     * @param str
+     * @return
+     */
+    public static String calculateNew(String str){
+
+        /**
+         * 存放数字的栈
+         */
+        Deque<String> numStack = new LinkedList<>();
+        /**
+         * 存放计算符号的栈
+         */
+        Deque<String> symbolStack = new LinkedList<>();
+
+        char[] charArray = str.toCharArray();
+
+        StringBuilder number = new StringBuilder();
+        for (int i = 0; i < charArray.length; i++) {
+            char c = charArray[i];
+
+            /**
+             * 如果遍历字符到最后一个，默认是数字，数字栈中有一个数字，运算符栈中有一个运算符
+             */
+            if (i == charArray.length - 1){
+                number.append(c);
+                numStack.push(number.toString());
+                number.setLength(0); //清空数字组装器
+
+                String pre = symbolStack.pop();
+                SYMBOL lastSymbol = SYMBOL.getBySymbol(pre);
+                String num2 = numStack.pop();
+                String num1 = numStack.pop();
+                String calculate = lastSymbol.calculate(num1, num2);
+                numStack.push(calculate); //计算并将结果push到数字栈
+            }
+            /**
+             * 如果是数字字符，拼接数字
+             */
+            if (Character.isDigit(c)){
+                number.append(c);
+            }else { //如果遍历到非数字字符
+                if (number.length() > 0){ //如果之前读取的数字非空，入数字栈
+                    numStack.push(number.toString());
+                    number.setLength(0); //清空数字组装器
+                }
+                //如果发现是符号则判断当前的符号栈是否为空，不为空则先处理已存在的运算，直到运算符栈中的运算符优先于当前运算符
+                if (!symbolStack.isEmpty()){
+                    SYMBOL nowSymbol = SYMBOL.getBySymbol(Character.toString(c));
+                    String pre;
+                    while (symbolStack.peek() != null){ //获取先前入栈的运算符
+                        pre = symbolStack.pop();
+                        SYMBOL preSymbol = SYMBOL.getBySymbol(pre);
+                        //如果当前优先级低于栈顶优先级
+                        if (preSymbol.priority >= nowSymbol.priority){
+                            String num2 = numStack.pop();
+                            String num1 = numStack.pop();
+                            String calculate = preSymbol.calculate(num1, num2);
+                            numStack.push(calculate); //计算并将结果push到数字栈
+                        }else {
+                            symbolStack.push(pre);
+                            break;
+                        }
+                    }
+                }
+                //当前运算符入栈
+                symbolStack.push(Character.toString(c));
+            }
+        }
+
+        //返回数字栈顶，即运算结果
+        return numStack.pop();
+
+    }
+
+    /**
+     * 计算数学表达式（考虑包含括号）
+     *
+     * 思路：分解成符号树
+     *
+     * @param str
+     * @return
+     */
+    public static String calculateIncludeBrackets(String str){
+
+
     }
 
     public static void shuffleArray(Integer[] array) {
@@ -1009,11 +2005,61 @@ public class Algorithm {
 //        merge(nums1,1,nums2,1);
 //        System.out.println(Arrays.toString(nums1));
 
-//        removeElement(new int[]{3,1,3},3);
+//        int i1 = removeElement1(new int[]{3, 1, 3}, 3);
+//        int i2 = removeElement2(new int[]{3, 1, 3}, 3);
 
-        Integer[] array = new Integer[]{2,7,9,3,1};
-        shuffleArray(array);
-        shuffleArray1(array);
-        shuffleArray2(array);
+//        Integer[] array = new Integer[]{2,7,9,3,1};
+//        shuffleArray(array);
+//        shuffleArray1(array);
+//        shuffleArray2(array);
+
+//        int i = maxProfit(new int[]{7, 1, 5, 3, 6, 4});
+//        System.out.println(i);
+
+//        int i1 = majorityElement(new int[]{7, 7, 5, 7, 5, 1, 5, 7, 5, 5, 7, 7, 7, 4, 7, 7});
+//        System.out.println(i1);
+
+
+//        String s = longestCommonPrefix(new String[]{"aswer", "lewer", "answer"});
+//        System.out.println(s);
+
+//        boolean b = containsNearbyDuplicate(new int[]{1, 2, 3, 1}, 3);
+//        System.out.println(b);
+
+//        int i = removeTwiceDuplicates(new int[]{0,0,1,1,1,1,2,3,3});
+//        System.out.println(i);
+
+//        int[] nums = new int[]{1,2,3,4,5,6,7};
+//        rotate(nums,7);
+//        System.out.println(Arrays.toString(nums));
+
+//        int maxMultiProfit = maxMultiProfit(new int[]{5, 4, 3, 2, 1});
+//        System.out.println(maxMultiProfit);
+
+//        int i1 = canCompleteCircuit(new int[]{1, 2, 3, 4, 5}, new int[]{3, 4, 5, 1, 2});
+//        System.out.println(i1);
+
+//        boolean b = canJump(new int[]{2, 3, 1, 1, 4});
+//        System.out.println(b);
+
+//        int jump = jump(new int[]{2, 3, 0, 1, 4});
+//        System.out.println(jump);
+
+//        int candy = candy(new int[]{1,2,3,2,1,0});
+//        System.out.println(candy);
+
+//        Deque<String> deque = new LinkedList<>();
+//        deque.add("22");
+//        deque.add("/");
+//        deque.add("11");
+//        deque.add("*");
+//        deque.add("2");
+//        System.out.println(deque(deque));
+//
+//        String calculate = calculate("3+4*1*2/3*3-10+3*3+10*1-10");
+//        System.out.println(calculate);
+//
+//        String s = calculateNew("3+4*1*2/3*3-10+3*3+10*1-10");
+//        System.out.println(s);
     }
 }
