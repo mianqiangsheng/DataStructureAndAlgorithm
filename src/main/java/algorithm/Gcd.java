@@ -15,15 +15,31 @@ public class Gcd {
      * @return 最大公约数
      */
     public static long gcd(long m,long n){
+//        if(m<n){
+//            return gcd(n,m);
+//        }else {
+//            while (n!=0){
+//                long rem =m%n;
+//                m=n;
+//                n=rem;
+//            }
+//            return m;
+//        }
+
+        /**
+         * 递归写法
+         */
         if(m<n){
             return gcd(n,m);
         }else {
-            while (n!=0){
-                long rem =m%n;
-                m=n;
-                n=rem;
+            long rem =m%n;
+            m=n;
+            n=rem;
+            if (n == 0){
+                return m;
+            }else {
+               return gcd(m, n);
             }
-            return m;
         }
     }
 
