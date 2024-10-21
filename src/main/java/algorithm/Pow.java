@@ -1,6 +1,7 @@
 package algorithm;
 
 /**
+ * 快速幂（二分加速）
  * 计算某个数的幂（减少乘法使用次数，提高运行速度）
  * Created by lizhen on 2018/9/19.
  */

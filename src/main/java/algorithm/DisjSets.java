@@ -29,13 +29,29 @@ public class DisjSets {
      * @param root2 集合2的根节点
      */
     public void union(int root1, int root2){
-        if(s[root2]<s[root1])
-            s[root1] = root2;
-        else {
-            if(s[root1]==s[root2])
-                s[root1]--;
-            s[root2]=root1;
+        /**
+         * 如果互相合并（6—>7,7->6），忽略
+         */
+        if (s[root1] == root2)
+            return;
+        /**
+         * 如果两个元素的根相同，忽略
+         */
+        if (s[root1]==s[root2] && s[root1] != -1){
+            return;
         }
+        s[root2]=root1;
+
+        /**
+         * 在应用查找多少个不相交集合时有问题
+         */
+//        if(s[root2]<s[root1])
+//            s[root1] = root2;
+//        else {
+//            if(s[root1]==s[root2])
+//                s[root1]--;
+//            s[root2]=root1;
+//        }
     }
 
     /**
@@ -48,7 +64,7 @@ public class DisjSets {
         if(s[x]<0)
             return x;
         else
-            return s[x] = find(s[x]);
+            return s[x] = find(s[x]); //路经压缩：即将根节点赋给查找路径上的所有中间节点，实现效果就是加快后续相关节点的集合父节点查询速度
     }
 
     public void pirnt(){
@@ -56,8 +72,8 @@ public class DisjSets {
     }
 
     /**
-     * [-1, -1, -1, 4, -3, 4, 4, 6] 表示 0至2下标的数组元素不属于任何类，下标3元素属于下标4元素，下标4元素有3个子元素
-     * 下标5，6也属于下标4元素，下标7属于下标6元素
+     * [-1, -1, -1, 4, -3, 4, 4, 6] 表示 0至2下标的数组元素不属于任何类，下标3元素属于下标4元素，下标4元素属于一类（-3=-1-1-1，表示发生过2次相同元素个数集合的合并）
+     * 下标5，6也属于下标4元素，下标7属于下标6元素（实际上下标7就是属于下标4元素一类）
      * @param args
      */
     public static void main(String[] args) {
@@ -70,6 +86,19 @@ public class DisjSets {
         disjSets.pirnt();
         System.out.println(disjSets.find(7)); //采用路径压缩后，改变将第8个元素的根节点由6变成了4,可以发现第5个元素的高度应该变成1，但还是2(显示-3,是按定义-1-2得到的)
         disjSets.pirnt();
+
+//        DisjSets disjSets = new DisjSets(5);
+//        disjSets.union(4,2);
+//        disjSets.union(0,1);
+//        disjSets.union(2,3);
+//        disjSets.union(1,4);
+//        disjSets.pirnt();
+//
+//        for (int i = 0; i < disjSets.s.length; i++) {
+//            disjSets.find(i);
+//        }
+//
+//        disjSets.pirnt();
 
     }
 }
