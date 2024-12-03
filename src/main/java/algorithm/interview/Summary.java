@@ -406,8 +406,6 @@ public class Summary {
     /**
      * #算法4、DP（Dynamic Programming）动态规划
      *
-     * 视频：bilibili BV1DK421876p、BV1Xt4214741
-     *
      * 问题随着规模变大，相邻之间虽然存在规律，但不像是递推时那种静态的关系，
      * 而是动态变化的（常常表现为Max、Min，从几种备选方案中选择一个最优的）。
      *
@@ -694,6 +692,114 @@ public class Summary {
      *
      */
 
+    /**
+     * EXAMPLE4: 0-1背包问题，给定一个固定容量的背包，现在有一堆物品，每个物品有其占空间大小和各自的价值，
+     * 问如何选择物品使得放入背包的物品的总价值最大？
+     * <p>
+     * dp[i,v]: 给定物品可以占据的空间v，放置前i个物品，能达到的最大价值
+     * val[i]: 第i个物品的价值
+     * cost[i]: 第i个物品占据的空间
+     * <p>
+     * 针对物品i和某个给定的空间v，
+     * 如果空间够，可以选择放或者不放
+     *  如果放置：剩余空间v-cost[i]，在这个空间上有一个dp[i-1,v-cost[i]]，总价值增加新放入的物品i（val[i]）
+     *  如果不放：仅仅将占据的空间变大到v，总价值是不放置物品i之前的价值
+     * 如果空间不够，只能不放
+     *  如果不放：仅仅将占据的空间变大到v，总价值是不放置物品i之前的价值
+     * <p>
+     * 这里前i个物品，根据推导的物品顺序不一样，由于最终是要考虑所有的物品，所以最终结果是一样的
+     * <p>
+     * dp[i,v] = MAX(dp[i-1,v-cost[i]]) + val[i], dp[i-1,v]), when v-cost[i]≥0
+     *           dp[i-1,v], when v-cost[i]<0
+     *
+     *
+     */
+
+    /**
+     * 优化以上算法到一维数组
+     * @param val 给定所有物品的价值
+     * @param cost 给定所有物品的占据空间
+     * @param volume 给定总空间大小
+     * @return
+     */
+    public static int zero_one_bag(int[] val, int[] cost, int volume){
+        int num = val.length;
+        int[] dp = new int[volume+1];
+        for (int i = 0; i < num; i++) {
+            for (int j = volume; j >= cost[i]; j--) {
+                dp[j] = Math.max(dp[j], dp[j-cost[i]] + val[i]);
+            }
+        }
+        return dp[volume];
+    }
+
+    /**
+     * 完全背包问题：每种物品可以无限拿，空间有限求最大价值
+     * 只需要把01背包里的空间遍历顺序改变成从前往后，就达到了物品可以无限取的条件的应用
+     * @param val 给定所有物品的价值
+     * @param cost 给定所有物品的占据空间
+     * @param volume 给定总空间大小
+     * @return
+     */
+    public static int full_bag(int[] val, int[] cost, int volume){
+        int num = val.length;
+        int[] dp = new int[volume+1];
+        for (int i = 0; i < num; i++) {
+            for (int j = cost[i]; j <= volume; j++) {
+                dp[j] = Math.max(dp[j], dp[j-cost[i]] + val[i]);
+            }
+        }
+        return dp[volume];
+    }
+
+    /**
+     * 多重背包问题：每种物品有给定的件数，空间有限求最大价值
+     * <p>
+     * 可以将每种相同的物品看作01背包问题里的独立的物品，按照01背包算法进行计算
+     * 但是这里涉及一个问题，就是如果某种物品件数很多，会很大增加遍历的次数。
+     * <p>
+     * 有一个计算优化，就是商品的件数num可以进行打包拆分，达到和分开考虑一样的效果。
+     * 即任何数字C可以用[1,2,4,8...2^(k-1),C-2^k+1]这组数字表示
+     * 因为[1,2,4,8...2^(k-1)]这组数字可以表示2^k-1中的任何数字，
+     * 可知，拿C-2^k+1从[1,2,4,8...2^(k-1)]中挑选组合就可以表示C中的任何数字。
+     * <p>
+     * 所以，算法还是和01背包一样，只是需要做前期准备，按照前面的方法构造恰当的 int[] val, int[] cost
+     * 减少输入数据的规模
+     *
+     * @param val 某种物品的价值
+     * @param cost 某种物品的占用空间
+     * @param num 某种物品的件数
+     * @return
+     */
+    public static void construct_multi_bag(int val, int cost, int num){
+
+        /**
+         * 构造某种物品的价值数组
+         */
+        List<Integer> subVal = new ArrayList<>();
+        /**
+         * 构造某种物品的占用空间数组
+         */
+        List<Integer> subCost = new ArrayList<>();
+
+        int t = 1;
+        while (num >= t){
+            subVal.add(val*t);
+            subCost.add(cost*t);
+            num -= t;
+            t <<= 1;
+        }
+        if (num>0){
+            subVal.add(val*num);
+            subCost.add(cost*num);
+        }
+    }
+
+
+    /**
+     * 视频：bilibili BV1sC4y1k74R
+     * @param args
+     */
     public static void main(String[] args) {
 //        int[] array = init(5);
 //        merge(4,2);
@@ -727,16 +833,22 @@ public class Summary {
 //        int i1 = catchPie(dp);
 //        System.out.println(i1);
 
-        int[] array = {1, 10, 4, 7, 2, 5, 8, 3, 6, 9, 11, 12};
+//        int[] array = {1, 10, 4, 7, 2, 5, 8, 3, 6, 9, 11, 12};
 //        int[] array = {6, 1, 2, 7, 3, 8, 5};
 //        int[] array = {6, 10, 11, 1, 7, 2, 6,10};
 //        int[] array = {10, 11, 1, 2, 7, 5};
 //        int[] array = {1, 3, 5, 2, 3, 4};
 
-        int result = maxLengthSubArrayLength(array);
-        System.out.println(result);
-        int[] a = maxLengthSubArray(array);
-        System.out.println(Arrays.toString(a));
+//        int result = maxLengthSubArrayLength(array);
+//        System.out.println(result);
+//        int[] a = maxLengthSubArray(array);
+//        System.out.println(Arrays.toString(a));
+
+        int[] val = new int[]{1,2,3,4,5};
+        int[] cost = new int[]{5,4,3,2,1};
+        int volume = 10;
+        System.out.println(zero_one_bag(val,cost,volume));
+        System.out.println(full_bag(val,cost,volume));
 
     }
 
