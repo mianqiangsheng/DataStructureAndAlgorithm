@@ -28,7 +28,7 @@ public class Dijkstra {
         private List<VerTex<T>> adjacent = new ArrayList<>();
 
         /**
-         * 标识顶点是否已知
+         * 标识顶点是否已知，即顶点到该点的最短路径是否已经确定
          */
         private boolean known;
 
@@ -38,7 +38,7 @@ public class Dijkstra {
         private int dist;
 
         /**
-         * 记录顶点至其实顶点的上一个顶点
+         * 记录顶点至起始顶点的上一个顶点
          */
         private VerTex<T> path;
 
@@ -133,6 +133,10 @@ public class Dijkstra {
     }
 
     /**
+     * 思想：每次从已经确定的最短路径的顶点出发，探寻所有可能的路径，更新各个节点的最短路径值，
+     * 再查看已经求过最短路径的节点，选择一个新的确定的最短路径顶点出发，重复以上步骤，
+     * 在此过程中就实现了遍历所有节点及路径，更新了各个节点的最短路径值，即找到了从起始点出发到各个顶点的所有最短路径并记录了各个顶点到起始点的路径怎么走
+     *
      * Dijkstra算法
      * @param s 计算图最短路径的起始点
      * @param costs 各条有向边的权重map
@@ -148,6 +152,10 @@ public class Dijkstra {
             for (VerTex<T> w:v.adjacent) {
                 if (!w.known){
                     int cvw = costsMap.get(v.num+"->"+w.num);
+                    /**
+                     * 更新某个节点的最短路径，应用DP思想
+                     * 假设v为当前待选的最短路节点且可以连通到w，顶点到w的最短路径 = min(已经求过的顶点到w的最短路径, v到w的权重 + 顶点到v的最短路径)
+                     */
                     if (v.dist+cvw<w.dist){
                         w.dist=v.dist+cvw;
                         w.path=v;

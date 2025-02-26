@@ -14,7 +14,7 @@ public class TopSort {
     private static List<VerTex> verList = new ArrayList<>();
 
     /**
-     * 图的顶点类
+     * 图的顶点类（邻接表）
      * @param <T> 顶点存放对象的类型
      */
     public static class VerTex<T>{
@@ -112,7 +112,7 @@ public class TopSort {
     }
 
     /**
-     * 拓扑排序
+     * 拓扑排序（BFS思想）
      * @param <T>
      * @throws CycleFoundException 图存在环异常
      */
